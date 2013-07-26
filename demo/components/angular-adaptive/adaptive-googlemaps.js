@@ -92,7 +92,7 @@
 
     adaptive.directive('googlemaps', function ($parse) {
       return {
-        template: '<a ng-style="style"><img alt="Google Map"></a>',
+        template: '<a ng-style="style"><img alt="Google Map" ></a>',
         replace: true,
         restrict: 'E',
         controller: 'GoogleMapsCtrl',
@@ -123,9 +123,8 @@
             throw new Error('Size must be specified as `wxh`.');
           }
 
-          imgel.width = parseInt(sizeBits[0], 10) + 'px';
-          imgel.height = parseInt(sizeBits[1], 10) + 'px';
           imgel.src = ctrl.buildSourceString(attrs, markers);
+          console.log(imgel);
 
 
           ctrl.setStyle({
