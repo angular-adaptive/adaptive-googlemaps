@@ -9,32 +9,7 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  var loadMap = function($element, center, zoom) {
-    var mapOptions = {
-      center: new google.maps.LatLng(0, 0),
-      zoom: (Number(zoom) || 8),
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-
-    var map = new google.maps.Map($element[0], mapOptions);
-
-    var geocoder = new google.maps.Geocoder();
-    geocoder.geocode( { 'address': center}, function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        var marker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location
-        });
-      }
-      else {
-        console.error('Geocode was not successful for the following reason: ' + status);
-      }
-    });
-
-  };
-
-  adaptive.controller('GoogleMapsCtrl', function () {
+  adaptive.controller('GoogleMapsCtrl', function ($scope) {
       var BASE_URL = '//maps.googleapis.com/maps/api/staticmap?';
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
 
@@ -84,18 +59,51 @@
           return a;
         }, '');
       };
+
+      this.loadMap = function($element, center, zoom) {
+        var mapOptions = {
+          center: new google.maps.LatLng(0, 0),
+          zoom: (Number(zoom) || 8),
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map($element[0], mapOptions);
+
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': center}, function(results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          }
+          else {
+            console.error('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      };
+
+      this.setStyle = function(style){
+        console.log(style);
+        $scope.style = style;
+      };
     });
 
     adaptive.directive('googlemaps', function ($parse) {
       return {
-        template: '<img alt="Google Map">',
+        template: '<a ng-style="style"><img alt="Google Map"></a>',
         replace: true,
         restrict: 'E',
         controller: 'GoogleMapsCtrl',
         scope: true,
 
         link: function postLink(scope, element, attrs, ctrl) {
-          var el = element[0];
+
+          var LOAD_MAP_ON_CLICK = true;
+          var ael = element;
+          var imgel = element.find('img')[0];
+
           var markers = $parse(attrs.markers)(scope);
 
           if (!attrs.sensor) {
@@ -106,14 +114,38 @@
             throw new Error('The `size` attribute is required.');
           }
 
+          if (!attrs.center) {
+            throw new Error('The `center` attribute is required.');
+          }
+
           var sizeBits = attrs.size.split('x');
           if (sizeBits.length !== 2) {
             throw new Error('Size must be specified as `wxh`.');
           }
 
-          el.width = parseInt(sizeBits[0], 10);
-          el.height = parseInt(sizeBits[1], 10);
-          el.src = ctrl.buildSourceString(attrs, markers);
+          imgel.width = parseInt(sizeBits[0], 10) + 'px';
+          imgel.height = parseInt(sizeBits[1], 10) + 'px';
+          imgel.src = ctrl.buildSourceString(attrs, markers);
+
+
+          ctrl.setStyle({
+            'display': 'block',
+            'cursor': 'pointer',
+            'width': parseInt(sizeBits[0], 10) + 'px',
+            'height': parseInt(sizeBits[1], 10) + 'px'
+          });
+
+          var mapLoaded = false;
+          element.bind('click', function(event){
+            if (LOAD_MAP_ON_CLICK && !mapLoaded) {
+              event.preventDefault();
+              mapLoaded = true;
+              ctrl.loadMap(ael, attrs.center, attrs.zoom);
+            }
+            else if (!LOAD_MAP_ON_CLICK && mapLoaded) {
+              event.preventDefault();
+            }
+          });
         }
       };
     });
