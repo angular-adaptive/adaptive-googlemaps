@@ -60,7 +60,7 @@
         }, '');
       };
 
-      this.loadMap = function($element, center, zoom) {
+      this.loadMap = function($element, center, zoom, markers) {
         var mapOptions = {
           center: new google.maps.LatLng(0, 0),
           zoom: (Number(zoom) || 8),
@@ -69,14 +69,37 @@
 
         var map = new google.maps.Map($element[0], mapOptions);
 
+        var pinImage = function(label, color){
+          return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=' + ( label || '%E2%80%A2') + '|' + color,
+            new google.maps.Size(21, 34),
+            new google.maps.Point(0,0),
+            new google.maps.Point(10, 34)
+          );
+        };
+
+        var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+          new google.maps.Size(40, 37),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(12, 35)
+        );
+
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': center}, function(results, status) {
           if (status == google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-              map: map,
-              position: results[0].geometry.location
-            });
+
+            for (var i = 0; i < markers.length; i++) {
+              var marker = new google.maps.Marker({
+                position: new google.maps.LatLng(markers[i].coords[0], markers[i].coords[1]),
+                title: markers[i].title,
+                icon: pinImage(markers[i].label, markers[i].color),
+                shadow: pinShadow,
+                map: map,
+                draggable: false,
+                animation: google.maps.Animation.DROP
+              });
+              console.log(marker);
+            }
           }
           else {
             console.error('Geocode was not successful for the following reason: ' + status);
@@ -139,7 +162,7 @@
             if (LOAD_MAP_ON_CLICK && !mapLoaded) {
               event.preventDefault();
               mapLoaded = true;
-              ctrl.loadMap(ael, attrs.center, attrs.zoom);
+              ctrl.loadMap(ael, attrs.center, attrs.zoom, markers);
             }
             else if (!LOAD_MAP_ON_CLICK && mapLoaded) {
               event.preventDefault();
