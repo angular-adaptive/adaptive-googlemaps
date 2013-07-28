@@ -70,7 +70,7 @@
         var map = new google.maps.Map($element[0], mapOptions);
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': center}, function(results, status) {
-          if (status == google.maps.GeocoderStatus.OK) {
+          if (status === google.maps.GeocoderStatus.OK) {
             map.setCenter(results[0].geometry.location);
 
             for (var i = 0; i < markers.length; i++) {
