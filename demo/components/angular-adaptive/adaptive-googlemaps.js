@@ -9,9 +9,10 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', function ($scope) {
-      var BASE_URL = '//maps.googleapis.com/maps/api/staticmap?';
+  adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
+      var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
+      var that = this;
 
       this.makeMarkerStrings = function makeMarkerStrings(markers) {
         return markers.map(function (marker) {
@@ -25,7 +26,7 @@
         });
       };
 
-      this.buildSourceString = function buildSourceString(attrs, markers) {
+      this.buildSourceString = function buildSourceString(attrs, markers, type) {
         var markerStrings;
 
         if (markers) {
@@ -47,7 +48,7 @@
           }
         });
 
-        return BASE_URL + params.reduce(function (a, b) {
+        return STATIC_URL + params.reduce(function (a, b) {
           if (!a) {
             return b;
           }
@@ -81,7 +82,6 @@
                 draggable: false,
                 animation: google.maps.Animation.DROP
               });
-              console.log(marker);
             }
           }
           else {
@@ -94,11 +94,17 @@
         console.log(style);
         $scope.style = style;
       };
+
+      $scope.getHref = function() {
+        console.log($attrs);
+        console.log($parse($attrs.markers)($scope));
+        return 'http://maps.apple.com/?q=' + $attrs.center + '&z=' + $attrs.zoom;
+      };
     });
 
     adaptive.directive('googlemaps', function ($parse) {
       return {
-        template: '<a ng-style="style"><img alt="Google Map" ></a>',
+        template: '<a ng-style="style" ng-href="{{getHref()}}"><img alt="Google Map" ></a>',
         replace: true,
         restrict: 'E',
         controller: 'GoogleMapsCtrl',
@@ -106,6 +112,7 @@
 
         link: function postLink(scope, element, attrs, ctrl) {
 
+          var REDIRECT_ON_CLICK = true;
           var LOAD_MAP_ON_CLICK = true;
           var ael = element;
           var imgel = element.find('img')[0];
@@ -142,7 +149,10 @@
 
           var mapLoaded = false;
           element.bind('click', function(event){
-            if (LOAD_MAP_ON_CLICK && !mapLoaded) {
+            if (REDIRECT_ON_CLICK && !mapLoaded) {
+              // event.preventDefault();
+            }
+            else if (LOAD_MAP_ON_CLICK && !mapLoaded) {
               event.preventDefault();
               mapLoaded = true;
               ctrl.loadMap(ael, attrs.center, attrs.zoom, markers);
