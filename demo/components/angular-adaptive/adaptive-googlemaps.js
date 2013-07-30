@@ -10,6 +10,7 @@
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
+      $scope.MAP_HREF = 'http://maps.apple.com/?center=' + $attrs.center + '&z=' + $attrs.zoom;
       var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
       var that = this;
@@ -61,6 +62,7 @@
         }, '');
       };
 
+      var mapLoaded = false;
       this.loadMap = function($element, center, zoom, markers) {
         var mapOptions = {
           center: new google.maps.LatLng(0, 0),
@@ -69,6 +71,9 @@
         };
 
         var map = new google.maps.Map($element[0], mapOptions);
+        $scope.MAP_HREF = '';
+        $element[0].href='';
+
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': center}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
@@ -94,15 +99,11 @@
         console.log(style);
         $scope.style = style;
       };
-
-      $scope.getHref = function() {
-        return 'http://maps.apple.com/?center=' + $attrs.center + '&z=' + $attrs.zoom;
-      };
     });
 
     adaptive.directive('googlemaps', function ($parse) {
       return {
-        template: '<a ng-style="style" ng-href="{{getHref()}}" target="_blank"><img alt="Google Map" ></a>',
+        template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"><img alt="Google Map" ></a>',
         replace: true,
         restrict: 'E',
         controller: 'GoogleMapsCtrl',
@@ -110,7 +111,7 @@
 
         link: function postLink(scope, element, attrs, ctrl) {
 
-          var REDIRECT_ON_CLICK = true;
+          var REDIRECT_ON_CLICK = false;
           var LOAD_MAP_ON_CLICK = true;
           var ael = element;
           var imgel = element.find('img')[0];
