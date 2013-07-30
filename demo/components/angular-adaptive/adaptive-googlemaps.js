@@ -26,7 +26,7 @@
         });
       };
 
-      this.buildSourceString = function buildSourceString(attrs, markers, type) {
+      this.buildSourceString = function buildSourceString(attrs, markers) {
         var markerStrings;
 
         if (markers) {
@@ -106,7 +106,7 @@
 
     adaptive.directive('googlemaps', function ($parse) {
       return {
-        template: '<a ng-style="style" ng-href="{{getHref()}}"><img alt="Google Map" ></a>',
+        template: '<a ng-style="style" ng-href="{{getHref()}}" target="_blank"><img alt="Google Map" ></a>',
         replace: true,
         restrict: 'E',
         controller: 'GoogleMapsCtrl',
@@ -138,7 +138,14 @@
             throw new Error('Size must be specified as `wxh`.');
           }
 
-          imgel.src = ctrl.buildSourceString(attrs, markers);
+          var a = {
+            'sensor': attrs.sensor,
+            'size': attrs.size,
+            'center': attrs.center,
+            'zoom': attrs.zoom,
+            'markers': attrs.markers
+          };
+          imgel.src = ctrl.buildSourceString(a, markers);
           console.log(imgel);
 
 
