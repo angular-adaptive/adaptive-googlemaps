@@ -96,10 +96,6 @@
       };
 
       $scope.getHref = function() {
-        var markers = $parse($attrs.markers)($scope);
-        console.log($attrs);
-        console.log(markers);
-
         return 'http://maps.apple.com/?center=' + $attrs.center + '&z=' + $attrs.zoom;
       };
     });
@@ -138,14 +134,14 @@
             throw new Error('Size must be specified as `wxh`.');
           }
 
-          var a = {
+          var staticAttributes = {
             'sensor': attrs.sensor,
             'size': attrs.size,
             'center': attrs.center,
             'zoom': attrs.zoom,
             'markers': attrs.markers
           };
-          imgel.src = ctrl.buildSourceString(a, markers);
+          imgel.src = ctrl.buildSourceString(staticAttributes, markers);
           console.log(imgel);
 
 
