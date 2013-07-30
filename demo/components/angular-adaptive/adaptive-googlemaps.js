@@ -96,9 +96,11 @@
       };
 
       $scope.getHref = function() {
+        var markers = $parse($attrs.markers)($scope);
         console.log($attrs);
-        console.log($parse($attrs.markers)($scope));
-        return 'http://maps.apple.com/?q=' + $attrs.center + '&z=' + $attrs.zoom;
+        console.log(markers);
+
+        return 'http://maps.apple.com/?center=' + $attrs.center + '&z=' + $attrs.zoom;
       };
     });
 
