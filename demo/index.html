@@ -7,7 +7,10 @@
 <title>AngularJS • googlemaps</title>
 <style>
   [ng-cloak] { display: none; }
-  html, body { padding: 0; margin: 0; font-family: 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif; }
+  html, body { padding: 0; margin: 0; font-family: 'Lucida Grande', 'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif; 
+    width: 100%;
+    height: 100%;
+  }
   * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -28,11 +31,18 @@
   }
 
   .content {
-      padding-top: 50px;
+    padding-top: 50px;
+    width: 100%;
+    height: 100%;
   }
 
   .center {
     text-align: center;
+  }
+
+  .google-maps {
+    width: 100%;
+    height: 300px;
   }
 
 
@@ -58,7 +68,7 @@
     
         <h2 class="center">Adaptive googlemaps</h2>
         
-        <googlemaps sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap"></googlemaps>
+        <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap"></googlemaps>
         
         <h5 class="center">Credits:</h5>
         <p class="center"><a href="http://twitter.com/janantala">Jan Antala</a></p>

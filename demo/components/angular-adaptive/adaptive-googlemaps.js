@@ -141,7 +141,7 @@
 
   adaptive.directive('googlemaps', function ($parse) {
     return {
-      template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"><img alt="Google Map" ></a>',
+      template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
       replace: true,
       restrict: 'E',
       controller: 'GoogleMapsCtrl',
@@ -152,7 +152,6 @@
         var REDIRECT_ON_CLICK = true;
         var LOAD_MAP_ON_CLICK = true;
         var ael = element;
-        var imgel = element.find('img')[0];
 
         var markers = $parse(attrs.markers)(scope);
 
@@ -181,15 +180,17 @@
           'zoom': attrs.zoom,
           'markers': attrs.markers
         };
-        imgel.src = ctrl.buildStaticMap(staticAttributes, markers);
-        console.log(imgel);
+        var imgsrc = ctrl.buildStaticMap(staticAttributes, markers);
+        console.log(imgsrc);
 
 
         ctrl.setStyle({
           'display': 'block',
           'cursor': 'pointer',
-          'width': parseInt(sizeBits[0], 10) + 'px',
-          'height': parseInt(sizeBits[1], 10) + 'px'
+          'background-image': 'url(' + imgsrc + ')',
+          'background-repeat': 'no-repeat',
+          'background-size': 'cover',
+          'background-position': 'center center'
         });
 
         var mapLoaded = false;
