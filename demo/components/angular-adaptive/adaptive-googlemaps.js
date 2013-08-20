@@ -10,55 +10,14 @@
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
+      
       var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
+      var mapLoaded = false;
       var that = this;
 
-      this.buildSourceString = function buildSourceString(attrs, markers) {
-        var markerStrings;
-
-        if (markers) {
-          if (!angular.isArray(markers)) {
-            markers = [markers];
-          }
-          markerStrings = markers;
-        }
-
-        var params = Object.keys(attrs).map(function (attr) {
-          if (attr === 'markers' && markerStrings) {
-            return Object.keys(markerStrings).map(function (key) {
-              return 'markers=' + encodeURIComponent(markerStrings[key]);
-            }).join('&');
-          }
-
-          if (attr[0] !== '$' && attr !== 'alt') {
-            return encodeURIComponent(attr) + '=' + encodeURIComponent(attrs[attr]);
-          }
-        });
-
-        (function(){
-          getLocation(
-            $attrs.center,
-            function(location){
-              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapTypeHref($attrs.maptype);
-              $scope.$apply();
-            },
-            function(error){
-            }
-          );
-        })();
-
-        return STATIC_URL + params.reduce(function (a, b) {
-          if (!a) {
-            return b;
-          }
-
-          if (b !== undefined) {
-            return a + '&' + b;
-          }
-
-          return a;
-        }, '');
-      };
+      /**
+       * Private methods
+       */
 
       var getLocation = function(center, success, error) {
         var geocoder = new google.maps.Geocoder();
@@ -84,44 +43,80 @@
         });
       };
 
-      var getMapTypeHref = function(maptype) {
+      var getMapType = function(maptype, href) {
         switch (maptype) {
           case 'satellite':
-            return 'k';
+            return href ? 'k' : google.maps.MapTypeId.SATELLITE;
           case 'terrain':
-            return 'p';
+            return href ? 'p' : google.maps.MapTypeId.TERRAIN;
           case 'hybrid':
-            return 'h';
+            return href ? 'h' : google.maps.MapTypeId.HYBRID;
           default: // 'roadmap'
-            return 'm';
+            return href ? 'm' : google.maps.MapTypeId.ROADMAP;
         }
       };
 
-      var getMapTypeId = function(maptype) {
-        switch (maptype) {
-          case 'satellite':
-            return google.maps.MapTypeId.SATELLITE;
-          case 'terrain':
-            return google.maps.MapTypeId.TERRAIN;
-          case 'hybrid':
-            return google.maps.MapTypeId.HYBRID;
-          default: // 'roadmap'
-            return google.maps.MapTypeId.ROADMAP;
+      /**
+       * Public methods
+       */
+      
+      this.buildStaticMap = function buildStaticMap(attrs, markers) {
+        var markerStrings;
+
+        if (markers) {
+          if (!angular.isArray(markers)) {
+            markers = [markers];
+          }
+          markerStrings = markers;
         }
+
+        var params = Object.keys(attrs).map(function (attr) {
+          if (attr === 'markers' && markerStrings) {
+            return Object.keys(markerStrings).map(function (key) {
+              return 'markers=' + encodeURIComponent(markerStrings[key]);
+            }).join('&');
+          }
+
+          if (attr[0] !== '$' && attr !== 'alt') {
+            return encodeURIComponent(attr) + '=' + encodeURIComponent(attrs[attr]);
+          }
+        });
+
+        (function(){
+          getLocation(
+            $attrs.center,
+            function(location){
+              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+              $scope.$apply();
+            },
+            function(error){
+              $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+              $scope.$apply();
+            }
+          );
+        })();
+
+        return STATIC_URL + params.reduce(function (a, b) {
+          if (!a) {
+            return b;
+          }
+
+          if (b !== undefined) {
+            return a + '&' + b;
+          }
+
+          return a;
+        }, '');
       };
 
-      var mapLoaded = false;
-      this.loadMap = function($element, center, zoom, maptype, markers) {
-        console.log('loadmap');
+      this.buildDynamicMap = function($element, center, zoom, maptype, markers) {
         var mapOptions = {
           center: new google.maps.LatLng(0, 0),
           zoom: (Number(zoom) || 8),
-          mapTypeId: getMapTypeId(maptype)
+          mapTypeId: getMapType(maptype, false)
         };
 
         var map = new google.maps.Map($element[0], mapOptions);
-        $scope.MAP_HREF = '';
-        $element[0].href='';
 
         getLocation(
           center,
@@ -186,7 +181,7 @@
             'zoom': attrs.zoom,
             'markers': attrs.markers
           };
-          imgel.src = ctrl.buildSourceString(staticAttributes, markers);
+          imgel.src = ctrl.buildStaticMap(staticAttributes, markers);
           console.log(imgel);
 
 
@@ -202,7 +197,8 @@
             if (LOAD_MAP_ON_CLICK && !mapLoaded) {
               event.preventDefault();
               mapLoaded = true;
-              ctrl.loadMap(ael, attrs.center, attrs.zoom, attrs.maptype, markers);
+              ael[0].href = null;
+              ctrl.buildDynamicMap(ael, attrs.center, attrs.zoom, attrs.maptype, markers);
             }
             else if (!REDIRECT_ON_CLICK && !mapLoaded) {
               event.preventDefault();
