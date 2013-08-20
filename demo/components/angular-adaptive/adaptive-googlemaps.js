@@ -84,7 +84,7 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        MAP_EVENTS.REDIRECT_ON_CLICK && getLocation(
+        MAP_EVENTS.redirect && getLocation(
           $attrs.center,
           function(location){
             $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
@@ -152,10 +152,7 @@
 
         var ael = element;
         var markers = $parse(attrs.markers)(scope);
-        var MAP_EVENTS = {
-          REDIRECT_ON_CLICK: false,
-          LOAD_MAP_ON_CLICK: true
-        };
+        var MAP_EVENTS = angular.extend({}, $parse(attrs.mapevents)(scope));
 
         if (!attrs.sensor) {
           throw new Error('The `sensor` attribute is required.');
@@ -195,16 +192,16 @@
 
         var mapLoaded = false;
         element.bind('click', function(event){
-          if (MAP_EVENTS.LOAD_MAP_ON_CLICK && !mapLoaded) {
+          if (MAP_EVENTS.loadmap && !mapLoaded) {
             event.preventDefault();
             mapLoaded = true;
             ael[0].href = null;
             ctrl.buildDynamicMap(MAP_EVENTS, ael, attrs.center, attrs.zoom, attrs.maptype, markers);
           }
-          else if (!MAP_EVENTS.REDIRECT_ON_CLICK && !mapLoaded) {
+          else if (!MAP_EVENTS.redirect && !mapLoaded) {
             event.preventDefault();
           }
-          else if (!MAP_EVENTS.LOAD_MAP_ON_CLICK && mapLoaded) {
+          else if (!MAP_EVENTS.loadmap && mapLoaded) {
             event.preventDefault();
           }
         });

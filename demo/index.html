@@ -68,9 +68,15 @@
     
         <h2 class="center">Adaptive googlemaps</h2>
         
-        <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap"></googlemaps>
         
+        <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>
+        <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap" mapevents="{redirect: true, loadmap: false}"></googlemaps>
+        
+        <h4>mapevents: no mapevents</h4>
         <googlemaps class="google-maps" sensor="false" size="500x300" zoom="9" center="New York" maptype="roadmap"></googlemaps>
+        
+        <h4>mapevents: {{{redirect: false, loadmap: true} | json}}</h4>
+        <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap" mapevents="{redirect: false, loadmap: true}"></googlemaps>
         
         <h5 class="center">Credits:</h5>
         <p class="center"><a href="http://twitter.com/janantala">Jan Antala</a></p>
