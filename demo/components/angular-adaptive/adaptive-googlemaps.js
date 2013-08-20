@@ -10,7 +10,7 @@
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
-      $scope.MAP_HREF = 'http://maps.apple.com/?center=' + $attrs.center + '&z=' + $attrs.zoom;
+      $scope.MAP_HREF = 'http://maps.apple.com/?q=' + $attrs.center + '&z=' + $attrs.zoom;
       var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
       var that = this;
@@ -64,6 +64,7 @@
 
       var mapLoaded = false;
       this.loadMap = function($element, center, zoom, markers) {
+        console.log('loadmap');
         var mapOptions = {
           center: new google.maps.LatLng(0, 0),
           zoom: (Number(zoom) || 8),
@@ -111,8 +112,8 @@
 
         link: function postLink(scope, element, attrs, ctrl) {
 
-          var REDIRECT_ON_CLICK = false;
-          var LOAD_MAP_ON_CLICK = true;
+          var REDIRECT_ON_CLICK = true;
+          var LOAD_MAP_ON_CLICK = false;
           var ael = element;
           var imgel = element.find('img')[0];
 
@@ -155,13 +156,13 @@
 
           var mapLoaded = false;
           element.bind('click', function(event){
-            if (REDIRECT_ON_CLICK && !mapLoaded) {
-              // event.preventDefault();
-            }
-            else if (LOAD_MAP_ON_CLICK && !mapLoaded) {
+            if (LOAD_MAP_ON_CLICK && !mapLoaded) {
               event.preventDefault();
               mapLoaded = true;
               ctrl.loadMap(ael, attrs.center, attrs.zoom, markers);
+            }
+            else if (!REDIRECT_ON_CLICK && !mapLoaded) {
+              event.preventDefault();
             }
             else if (!LOAD_MAP_ON_CLICK && mapLoaded) {
               event.preventDefault();
