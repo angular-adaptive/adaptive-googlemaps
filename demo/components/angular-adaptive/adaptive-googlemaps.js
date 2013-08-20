@@ -84,6 +84,18 @@
         });
       };
 
+      var addMarker = function(address, map) {
+        getLL(address, function(location){
+          var marker = new google.maps.Marker({
+            position: location,
+            title: address,
+            map: map,
+            draggable: false,
+            animation: google.maps.Animation.DROP
+          });
+        });
+      };
+
       var mapLoaded = false;
       this.loadMap = function($element, center, zoom, markers) {
         console.log('loadmap');
@@ -104,13 +116,7 @@
             map.setCenter(location);
 
             for (var i = 0; i < markers.length; i++) {
-              var marker = new google.maps.Marker({
-                position: new google.maps.LatLng(markers[i].coords[0], markers[i].coords[1]),
-                title: markers[i].title,
-                map: map,
-                draggable: false,
-                animation: google.maps.Animation.DROP
-              });
+              addMarker(markers[i], map);
             }
           },
           function(error){
@@ -137,7 +143,7 @@
         link: function postLink(scope, element, attrs, ctrl) {
 
           var REDIRECT_ON_CLICK = true;
-          var LOAD_MAP_ON_CLICK = false;
+          var LOAD_MAP_ON_CLICK = true;
           var ael = element;
           var imgel = element.find('img')[0];
 
