@@ -15,23 +15,14 @@
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
       var that = this;
 
-      this.makeMarkerStrings = function makeMarkerStrings(markers) {
-        return markers.map(function (marker) {
-          var str = marker;
-
-          return str + marker;
-        });
-      };
-
       this.buildSourceString = function buildSourceString(attrs, markers) {
-        console.log(markers);
         var markerStrings;
 
         if (markers) {
           if (!angular.isArray(markers)) {
             markers = [markers];
           }
-          markerStrings = this.makeMarkerStrings(markers);
+          markerStrings = markers;
         }
 
         var params = Object.keys(attrs).map(function (attr) {
@@ -166,6 +157,7 @@
           var staticAttributes = {
             'sensor': attrs.sensor,
             'size': attrs.size,
+            'maptype': attrs.maptype,
             'center': attrs.center,
             'zoom': attrs.zoom,
             'markers': attrs.markers
