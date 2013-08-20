@@ -60,7 +60,7 @@
      * Public methods
      */
     
-    this.buildStaticMap = function buildStaticMap(attrs, markers) {
+    this.buildStaticMap = function buildStaticMap(MAP_EVENTS, attrs, markers) {
       var markerStrings;
 
       if (markers) {
@@ -82,9 +82,9 @@
         }
       });
 
-      (function(){
+      (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        getLocation(
+        MAP_EVENTS.REDIRECT_ON_CLICK && getLocation(
           $attrs.center,
           function(location){
             $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
@@ -95,7 +95,7 @@
             $scope.$apply();
           }
         );
-      })();
+      })(MAP_EVENTS);
 
       return STATIC_URL + params.reduce(function (a, b) {
         if (!a) {
@@ -110,7 +110,7 @@
       }, '');
     };
 
-    this.buildDynamicMap = function($element, center, zoom, maptype, markers) {
+    this.buildDynamicMap = function(MAP_EVENTS, $element, center, zoom, maptype, markers) {
       var mapOptions = {
         center: new google.maps.LatLng(0, 0),
         zoom: (Number(zoom) || 8),
@@ -150,11 +150,12 @@
 
       link: function postLink(scope, element, attrs, ctrl) {
 
-        var REDIRECT_ON_CLICK = true;
-        var LOAD_MAP_ON_CLICK = true;
         var ael = element;
-
         var markers = $parse(attrs.markers)(scope);
+        var MAP_EVENTS = {
+          REDIRECT_ON_CLICK: false,
+          LOAD_MAP_ON_CLICK: true
+        };
 
         if (!attrs.sensor) {
           throw new Error('The `sensor` attribute is required.');
@@ -181,7 +182,7 @@
           'zoom': attrs.zoom,
           'markers': attrs.markers
         };
-        var imgsrc = ctrl.buildStaticMap(staticAttributes, markers);
+        var imgsrc = ctrl.buildStaticMap(MAP_EVENTS, staticAttributes, markers);
 
         ctrl.setStyle({
           'display': 'block',
@@ -194,16 +195,16 @@
 
         var mapLoaded = false;
         element.bind('click', function(event){
-          if (LOAD_MAP_ON_CLICK && !mapLoaded) {
+          if (MAP_EVENTS.LOAD_MAP_ON_CLICK && !mapLoaded) {
             event.preventDefault();
             mapLoaded = true;
             ael[0].href = null;
-            ctrl.buildDynamicMap(ael, attrs.center, attrs.zoom, attrs.maptype, markers);
+            ctrl.buildDynamicMap(MAP_EVENTS, ael, attrs.center, attrs.zoom, attrs.maptype, markers);
           }
-          else if (!REDIRECT_ON_CLICK && !mapLoaded) {
+          else if (!MAP_EVENTS.REDIRECT_ON_CLICK && !mapLoaded) {
             event.preventDefault();
           }
-          else if (!LOAD_MAP_ON_CLICK && mapLoaded) {
+          else if (!MAP_EVENTS.LOAD_MAP_ON_CLICK && mapLoaded) {
             event.preventDefault();
           }
         });
