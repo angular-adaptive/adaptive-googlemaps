@@ -47,10 +47,9 @@
         });
 
         (function(){
-          getLL(
+          getLocation(
             $attrs.center,
             function(location){
-              console.log($attrs.markers);
               $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom;
               $scope.$apply();
             },
@@ -72,7 +71,7 @@
         }, '');
       };
 
-      var getLL = function(center, success, error) {
+      var getLocation = function(center, success, error) {
         var geocoder = new google.maps.Geocoder();
         geocoder.geocode( { 'address': center}, function(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
@@ -85,7 +84,7 @@
       };
 
       var addMarker = function(address, map) {
-        getLL(address, function(location){
+        getLocation(address, function(location){
           var marker = new google.maps.Marker({
             position: location,
             title: address,
@@ -109,12 +108,10 @@
         $scope.MAP_HREF = '';
         $element[0].href='';
 
-        getLL(
+        getLocation(
           center,
           function(location){
-            console.log(location);
             map.setCenter(location);
-
             for (var i = 0; i < markers.length; i++) {
               addMarker(markers[i], map);
             }
