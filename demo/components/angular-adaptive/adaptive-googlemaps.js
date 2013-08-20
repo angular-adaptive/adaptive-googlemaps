@@ -10,9 +10,7 @@
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
-      $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + '' + '&q=' + $attrs.center + '&z=' + $attrs.zoom;
       var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
-      var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
       var that = this;
 
       this.buildSourceString = function buildSourceString(attrs, markers) {
@@ -41,7 +39,7 @@
           getLocation(
             $attrs.center,
             function(location){
-              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom;
+              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapTypeHref($attrs.maptype);
               $scope.$apply();
             },
             function(error){
@@ -86,13 +84,39 @@
         });
       };
 
+      var getMapTypeHref = function(maptype) {
+        switch (maptype) {
+          case 'satellite':
+            return 'k';
+          case 'terrain':
+            return 'p';
+          case 'hybrid':
+            return 'h';
+          default: // 'roadmap'
+            return 'm';
+        }
+      };
+
+      var getMapTypeId = function(maptype) {
+        switch (maptype) {
+          case 'satellite':
+            return google.maps.MapTypeId.SATELLITE;
+          case 'terrain':
+            return google.maps.MapTypeId.TERRAIN;
+          case 'hybrid':
+            return google.maps.MapTypeId.HYBRID;
+          default: // 'roadmap'
+            return google.maps.MapTypeId.ROADMAP;
+        }
+      };
+
       var mapLoaded = false;
-      this.loadMap = function($element, center, zoom, markers) {
+      this.loadMap = function($element, center, zoom, maptype, markers) {
         console.log('loadmap');
         var mapOptions = {
           center: new google.maps.LatLng(0, 0),
           zoom: (Number(zoom) || 8),
-          mapTypeId: google.maps.MapTypeId.ROADMAP
+          mapTypeId: getMapTypeId(maptype)
         };
 
         var map = new google.maps.Map($element[0], mapOptions);
@@ -178,7 +202,7 @@
             if (LOAD_MAP_ON_CLICK && !mapLoaded) {
               event.preventDefault();
               mapLoaded = true;
-              ctrl.loadMap(ael, attrs.center, attrs.zoom, markers);
+              ctrl.loadMap(ael, attrs.center, attrs.zoom, attrs.maptype, markers);
             }
             else if (!REDIRECT_ON_CLICK && !mapLoaded) {
               event.preventDefault();
