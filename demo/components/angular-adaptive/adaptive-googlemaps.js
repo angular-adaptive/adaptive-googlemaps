@@ -83,14 +83,15 @@
       });
 
       (function(){
+        var query = markers && markers.length ? markers[0] : '';
         getLocation(
           $attrs.center,
           function(location){
-            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
             $scope.$apply();
           },
           function(error){
-            $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + markers[0] + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+            $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
             $scope.$apply();
           }
         );
@@ -122,7 +123,7 @@
         center,
         function(location){
           map.setCenter(location);
-          for (var i = 0; i < markers.length; i++) {
+          for (var i = 0; markers && i < markers.length; i++) {
             addMarker(markers[i], map);
           }
         },
@@ -181,8 +182,6 @@
           'markers': attrs.markers
         };
         var imgsrc = ctrl.buildStaticMap(staticAttributes, markers);
-        console.log(imgsrc);
-
 
         ctrl.setStyle({
           'display': 'block',
