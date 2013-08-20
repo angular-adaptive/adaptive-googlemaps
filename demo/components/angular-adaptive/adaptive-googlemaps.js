@@ -17,17 +17,14 @@
 
       this.makeMarkerStrings = function makeMarkerStrings(markers) {
         return markers.map(function (marker) {
-          var str = Object.keys(marker).map(function (key) {
-            if (STYLE_ATTRIBUTES.indexOf(key) > -1) {
-              return key + ':' + marker[key] + '|';
-            }
-          }).join('');
+          var str = marker;
 
-          return str + marker.coords.join(',');
+          return str + marker;
         });
       };
 
       this.buildSourceString = function buildSourceString(attrs, markers) {
+        console.log(markers);
         var markerStrings;
 
         if (markers) {
@@ -48,6 +45,19 @@
             return encodeURIComponent(attr) + '=' + encodeURIComponent(attrs[attr]);
           }
         });
+
+        (function(){
+          getLL(
+            $attrs.center,
+            function(location){
+              console.log($attrs.markers);
+              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + markers[0] + '&z=' + $attrs.zoom;
+              $scope.$apply();
+            },
+            function(error){
+            }
+          );
+        })();
 
         return STATIC_URL + params.reduce(function (a, b) {
           if (!a) {
@@ -114,18 +124,6 @@
         $scope.style = style;
       };
 
-      // TODO if href only
-      (function(){
-        getLL(
-          $attrs.center,
-          function(location){
-            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + $attrs.center + '&z=' + $attrs.zoom;
-            $scope.$apply();
-          },
-          function(error){
-          }
-        );
-      })();
     });
 
     adaptive.directive('googlemaps', function ($parse) {
