@@ -10,7 +10,7 @@
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
-      $scope.MAP_HREF = 'http://maps.apple.com/?q=' + $attrs.center + '&z=' + $attrs.zoom;
+      $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + '' + '&q=' + $attrs.center + '&z=' + $attrs.zoom;
       var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
       var STYLE_ATTRIBUTES = ['color', 'label', 'size'];
       var that = this;
@@ -62,6 +62,18 @@
         }, '');
       };
 
+      var getLL = function(center, success, error) {
+        var geocoder = new google.maps.Geocoder();
+        geocoder.geocode( { 'address': center}, function(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            success(results[0].geometry.location);
+          }
+          else {
+            error('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      };
+
       var mapLoaded = false;
       this.loadMap = function($element, center, zoom, markers) {
         console.log('loadmap');
@@ -75,10 +87,11 @@
         $scope.MAP_HREF = '';
         $element[0].href='';
 
-        var geocoder = new google.maps.Geocoder();
-        geocoder.geocode( { 'address': center}, function(results, status) {
-          if (status === google.maps.GeocoderStatus.OK) {
-            map.setCenter(results[0].geometry.location);
+        getLL(
+          center,
+          function(location){
+            console.log(location);
+            map.setCenter(location);
 
             for (var i = 0; i < markers.length; i++) {
               var marker = new google.maps.Marker({
@@ -89,17 +102,30 @@
                 animation: google.maps.Animation.DROP
               });
             }
+          },
+          function(error){
+            console.error(error);
           }
-          else {
-            console.error('Geocode was not successful for the following reason: ' + status);
-          }
-        });
+        );
       };
 
       this.setStyle = function(style){
         console.log(style);
         $scope.style = style;
       };
+
+      // TODO if href only
+      (function(){
+        getLL(
+          $attrs.center,
+          function(location){
+            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + $attrs.center + '&z=' + $attrs.zoom;
+            $scope.$apply();
+          },
+          function(error){
+          }
+        );
+      })();
     });
 
     adaptive.directive('googlemaps', function ($parse) {
