@@ -113,7 +113,7 @@
     this.buildDynamicMap = function(MAP_EVENTS, $element, center, zoom, maptype, markers) {
       var mapOptions = {
         center: new google.maps.LatLng(0, 0),
-        zoom: (Number(zoom) || 8),
+        zoom: (Number(zoom) || 6),
         mapTypeId: getMapType(maptype, false)
       };
 
@@ -184,8 +184,12 @@
         ctrl.setStyle({
           'display': 'block',
           'cursor': 'pointer',
-          'background-image': 'url(' + imgsrc + ')',
+          'background-image': 'url(\'' + imgsrc + '\')',
           'background-repeat': 'no-repeat',
+          '-webkit-background-size': 'cover',
+          '-moz-background-size': 'cover',
+          '-o-background-size': 'cover',
+          '-ms-background-size': 'cover',
           'background-size': 'cover',
           'background-position': 'center center'
         });
