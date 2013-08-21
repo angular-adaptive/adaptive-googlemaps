@@ -84,7 +84,7 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        MAP_EVENTS.redirect && getLocation(
+        var b = MAP_EVENTS.redirect && getLocation(
           $attrs.center,
           function(location){
             $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
