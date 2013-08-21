@@ -68,9 +68,23 @@
     
         <h2 class="center">Adaptive googlemaps</h2>
         
+        <h3>Directive attributes</h3>
+        <ul>
+          <li><pre><code>sensor="false"</code></pre></li>
+          <li><pre><code>size="500x300"</code></pre></li>
+          <li><pre><code>zoom="6"</code></pre></li>
+          <li><pre><code>center="Slovakia"</code></pre></li>
+          <li><pre><code>markers="markers"</code></pre></li>
+          <li><pre><code>maptype="roadmap"</code></pre></li>
+          <li><pre><code>mapevents="{redirect: true, loadmap: false}"</code></pre></li>
+        </ul>
+        
+        <h3>Demo</h3>
         
         <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>
+
         <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap" mapevents="{redirect: true, loadmap: false}"></googlemaps>
+        <p><small><em>Note: only the first marker is shown in Google Maps redirect</em></small></p>
         
         <h4>mapevents: no mapevents</h4>
         <googlemaps class="google-maps" sensor="false" size="500x300" zoom="9" center="New York" maptype="roadmap"></googlemaps>
@@ -78,8 +92,12 @@
         <h4>mapevents: {{{redirect: false, loadmap: true} | json}}</h4>
         <googlemaps class="google-maps" sensor="false" size="500x300" zoom="6" center="Slovakia" markers="markers" maptype="roadmap" mapevents="{redirect: false, loadmap: true}"></googlemaps>
         
-        <h5 class="center">Credits:</h5>
-        <p class="center"><a href="http://twitter.com/janantala">Jan Antala</a></p>
+        <h3>ToDo:</h3>
+        <p>Let the device/browser decide what kinds of map events will be used.</p>
+        <p>Example: mobile device will open native maps application, browser with fast internet connection will auto load dynamic map...</p>
+        
+        <h4>Credits:</h4>
+        <p><a href="http://twitter.com/janantala">Jan Antala</a></p>
     </section>
     
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
