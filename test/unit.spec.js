@@ -21,7 +21,7 @@ describe('adaptive.googlemaps', function() {
   }));
 
   it('shold have background image', function(){
-    expect(elm[0].style.backgroundImage).toBe('url(http://maps.googleapis.com/maps/api/staticmap?sensor=false&size=500x300&maptype=terrain&center=San%20Francisco%20International%20Airport&zoom=9&markers=San%20Francisco&markers=San%20Jose)');
+    expect(elm.css('background-image').match(/\/\/maps.googleapis.com\/maps\/api\/staticmap\?sensor=false\&size=500x300\&maptype=terrain\&center=San\%20Francisco\%20International\%20Airport\&zoom=9\&markers=San\%20Francisco\&markers=San\%20Jose/g).length).toBe(1);
   });
 
 });
