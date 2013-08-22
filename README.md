@@ -1,4 +1,4 @@
-# adaptive-googlemaps v0.1.0 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
+# adaptive-googlemaps v0.1.1 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
 
 This module allows you to adapt googlemaps component for different occasions.
 - static google map
