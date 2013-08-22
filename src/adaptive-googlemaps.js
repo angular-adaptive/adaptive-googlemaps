@@ -199,7 +199,7 @@
           if (MAP_EVENTS.loadmap && !mapLoaded) {
             event.preventDefault();
             mapLoaded = true;
-            ael[0].href = null;
+            ael.removeAttr('href');
             ctrl.buildDynamicMap(MAP_EVENTS, ael, attrs.center, attrs.zoom, attrs.maptype, markers);
           }
           else if (!MAP_EVENTS.redirect && !mapLoaded) {
