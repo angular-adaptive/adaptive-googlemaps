@@ -9,8 +9,8 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse) {
-      
+  adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse, $log) {
+
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var mapLoaded = false;
     var that = this;
@@ -59,7 +59,7 @@
     /**
      * Public methods
      */
-    
+
     this.buildStaticMap = function buildStaticMap(MAP_EVENTS, attrs, markers) {
       var markerStrings;
 
@@ -128,13 +128,13 @@
           }
         },
         function(error){
-          console.error(error);
+          $log.error(error);
         }
       );
     };
 
     this.setStyle = function(style){
-      console.log(style);
+      $log.log(style);
       $scope.style = style;
     };
 
