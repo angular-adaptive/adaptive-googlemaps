@@ -140,7 +140,7 @@
 
   }]);
 
-  adaptive.directive('googlemaps', [ "$parse", function ($parse) {
+  adaptive.directive('googlemaps', [ '$parse', function ($parse) {
     return {
       template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
       replace: true,
