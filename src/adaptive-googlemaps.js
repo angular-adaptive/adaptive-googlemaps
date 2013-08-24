@@ -9,7 +9,7 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse, $log) {
+  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$attrs', '$parse', '$log', function ($scope, $element, $attrs, $parse, $log) {
 
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var mapLoaded = false;
@@ -138,9 +138,9 @@
       $scope.style = style;
     };
 
-  });
+  }]);
 
-  adaptive.directive('googlemaps', function ($parse) {
+  adaptive.directive('googlemaps', [ '$parse', function ($parse) {
     return {
       template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
       replace: true,
@@ -211,5 +211,5 @@
         });
       }
     };
-  });
+  }]);
 }(google));
