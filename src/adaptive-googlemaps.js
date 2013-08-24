@@ -9,7 +9,7 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', [ "$scope", "$element", "$attrs", "$parse", "$log", function ($scope, $element, $attrs, $parse, $log) {
+  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$attrs', '$parse', '$log', function ($scope, $element, $attrs, $parse, $log) {
 
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var mapLoaded = false;
