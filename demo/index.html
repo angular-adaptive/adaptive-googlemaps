@@ -81,6 +81,8 @@
         <p><small><em>
           Loads dynamic google map.
         </em></small></p>
+        <input type="text" ng-model="center">
+        <button ng-click="map1.center = center">Change</button>
         <googlemaps class="google-maps" options="map1"></googlemaps>
         
         <!-- <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>

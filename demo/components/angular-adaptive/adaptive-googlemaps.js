@@ -60,7 +60,16 @@
      * Public methods
      */
 
-    this.buildStaticMap = function buildStaticMap(MAP_EVENTS, staticAttributes) {
+    this.buildStaticMap = function buildStaticMap() {
+      var staticAttributes = {
+        'sensor': $scope.options.sensor,
+        'size': $scope.options.size,
+        'maptype': $scope.options.maptype,
+        'center': $scope.options.center,
+        'zoom': $scope.options.zoom,
+        'markers': $scope.options.markers
+      };
+
       var markerStrings;
       var markers = staticAttributes.markers;
 
@@ -98,7 +107,7 @@
             }
           );
         }
-      })(MAP_EVENTS);
+      })($scope.MAP_EVENTS);
 
       $scope.imgsrc = STATIC_URL + params.reduce(function (a, b) {
         if (!a) {
@@ -115,7 +124,15 @@
       $scope.updateStyle();
     };
 
-    this.buildDynamicMap = function(MAP_EVENTS, $element, dynamicAttributes) {
+    this.buildDynamicMap = function() {
+      var dynamicAttributes = {
+        'maptype': $scope.options.maptype,
+        'center': $scope.options.center,
+        'zoom': $scope.options.zoom,
+        'markers': $scope.options.markers
+      };
+
+      console.log($scope.options);
       var mapOptions = {
         center: ($scope.location || new google.maps.LatLng(0, 0)),
         zoom: (Number(dynamicAttributes.zoom) || 6),
@@ -155,6 +172,37 @@
 
     $scope.updateStyle();
 
+    // $scope.$watch('options.zoom', function() {
+    //   that.buildStaticMap();
+    // });
+
+    // $scope.$watch('options.center', function() {
+    //   that.buildStaticMap();
+    // });
+
+    // $scope.$watch('options.sensor', function() {
+    //   that.buildStaticMap();
+    // });
+
+    // $scope.$watch('options.markers', function() {
+    //   that.buildStaticMap();
+    // });
+
+    // $scope.$watch('options.size', function() {
+    //   that.buildStaticMap();
+    // });
+
+    // $scope.$watch('options.maptype', function() {
+    //   that.buildStaticMap();
+    // });
+
+    this.startWatching = function() {
+      $scope.$watch('[options.zoom, options.center, options.sensor, options.markers, options.size, options.maptype]', function() {
+        // that.buildStaticMap();
+        console.log($scope.options);
+      });
+    };
+
   }]);
 
   adaptive.directive('googlemaps', [ '$parse', function ($parse) {
@@ -170,7 +218,7 @@
       link: function postLink(scope, element, attrs, ctrl) {
 
         var ael = element;
-        var MAP_EVENTS = angular.extend({}, scope.options.mapevents);
+        scope.MAP_EVENTS = angular.extend({}, scope.options.mapevents);
 
         console.log(scope.options);
 
@@ -190,37 +238,22 @@
         if (sizeBits.length !== 2) {
           throw new Error('Size must be specified as `wxh`.');
         }
-
-        var staticAttributes = {
-          'sensor': scope.options.sensor,
-          'size': scope.options.size,
-          'maptype': scope.options.maptype,
-          'center': scope.options.center,
-          'zoom': scope.options.zoom,
-          'markers': scope.options.markers
-        };
-
-        var dynamicAttributes = {
-          'maptype': scope.options.maptype,
-          'center': scope.options.center,
-          'zoom': scope.options.zoom,
-          'markers': scope.options.markers
-        };
         
-        ctrl.buildStaticMap(MAP_EVENTS, staticAttributes);
+        // ctrl.startWatching();
+        ctrl.buildStaticMap();
 
         var mapLoaded = false;
         element.bind('click', function(event){
-          if (MAP_EVENTS.loadmap && !mapLoaded) {
+          if (scope.MAP_EVENTS.loadmap && !mapLoaded) {
             event.preventDefault();
             mapLoaded = true;
             ael.removeAttr('href');
-            ctrl.buildDynamicMap(MAP_EVENTS, ael, dynamicAttributes);
+            ctrl.buildDynamicMap();
           }
-          else if (!MAP_EVENTS.redirect && !mapLoaded) {
+          else if (!scope.MAP_EVENTS.redirect && !mapLoaded) {
             event.preventDefault();
           }
-          else if (!MAP_EVENTS.loadmap && mapLoaded) {
+          else if (!scope.MAP_EVENTS.loadmap && mapLoaded) {
             event.preventDefault();
           }
         });
