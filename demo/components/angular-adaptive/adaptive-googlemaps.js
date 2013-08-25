@@ -9,7 +9,7 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$parse', '$log', '$window', function ($scope, $element, $parse, $log, $window) {
+  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$log', '$window', function ($scope, $element, $log, $window) {
 
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var that = this;
@@ -102,7 +102,7 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        if (MAP_EVENTS.redirect && !$scope.location) {
+        if (MAP_EVENTS.redirect) {
           $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + $scope.options.center + '&z=' + $scope.options.zoom + '&t=' + getMapType($scope.options.maptype, true);
         }
       })($scope.MAP_EVENTS);
@@ -135,7 +135,7 @@
       };
 
       var mapOptions = {
-        center: ($scope.location || new google.maps.LatLng(0, 0)),
+        center: (new google.maps.LatLng(0, 0)),
         zoom: (Number(dynamicAttributes.zoom) || 6),
         mapTypeId: getMapType(dynamicAttributes.maptype, false)
       };
@@ -255,7 +255,7 @@
 
   }]);
 
-  adaptive.directive('googlemaps', [ '$parse', function ($parse) {
+  adaptive.directive('googlemaps', [ function () {
     return {
       template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
       replace: true,
