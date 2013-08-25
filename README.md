@@ -1,4 +1,4 @@
-# adaptive-googlemaps v0.1.2 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
+# adaptive-googlemaps v0.2.0 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
 
 This module allows you to adapt googlemaps component for different occasions.
 - static google map
@@ -13,7 +13,7 @@ Check out http://angular-adaptive.github.io/adaptive-googlemaps/demo/
 # Requirements
 
 - AngularJS v 1.0+
-- Googlemaps script
+- Googlemaps script (only for dynamic google map)
 
 # Usage
 
@@ -39,22 +39,34 @@ Add the **adaptive.googlemaps** module as a dependency to your application modul
 
 Add **googlemaps** element into your template
 
-    <googlemaps class="google-maps" sensor="false" size="500x300" zoom="9" center="San Francisco International Airport" markers="['San Francisco', 'San Jose']" maptype="terrain" mapevents="{redirect: false, loadmap: true}"></googlemaps>
+    <googlemaps class="google-maps" options="map1"></googlemaps>
 
 ### Directive attributes
 
+    $scope.map1 = {
+        sensor: false,
+        size: '500x300',
+        zoom: 9,
+        center: 'San Francisco International Airport',
+        markers: ['San Francisco', 'San Jose'],
+        maptype: 'terrain',
+        mapevents: {redirect: false, loadmap: true},
+        listen: true
+    };
+
 #### Required:
 
-- sensor="false" // true, false
-- size="500x300" // width x height
-- zoom="6"
-- center="California"
+- sensor: false // true, false
+- size: '500x300' // width x height
+- zoom: 6
+- center: 'California'
 
 #### Optional:
 
-- markers="['San Francisco', 'San Jose']"
-- maptype="roadmap" // roadmap, satellite, terrain, hybrid
-- mapevents="{redirect: true, loadmap: false}"
+- markers: ['San Francisco', 'San Jose']
+- maptype: 'roadmap' // roadmap, satellite, terrain, hybrid
+- mapevents: {redirect: true, loadmap: false}
+- listen: true // watch for attributes change
 
 #### mapevents: { "redirect": false, "loadmap": true }
 Loads dynamic google map.
