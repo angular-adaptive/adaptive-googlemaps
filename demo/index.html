@@ -56,39 +56,40 @@
     
         <h2 class="center">Adaptive googlemaps</h2>
         
-        <h3><pre>googlemaps element</pre></h3>
+        <p>Conditionally loads goolemaps after clicking on the static image.</p>
         
-        <h3>Directive attributes</h3>
+        <h3><code>&lt;googlemaps options="map1"&gt;&lt;/googlemaps&gt;</code></h3>
         
+        <h3>Options attributes</h3>
+        
+        <pre>$scope.map1 = {</pre>
         <h5>Required:</h5>
         <ul>
-          <li><strong><code>sensor="false" // true, false</code></strong></li>
-          <li><strong><code>size="500x300" // width x height</code></strong></li>
-          <li><strong><code>zoom="6"</code></strong></li>
-          <li><strong><code>center="California"</code></strong></li>
+          <li><strong><code>sensor: false // true, false</code></strong></li>
+          <li><strong><code>size: '500x300' // width x height</code></strong></li>
+          <li><strong><code>zoom: 6</code></strong></li>
+          <li><strong><code>center: 'California'</code></strong></li>
         </ul>
         
         <h5>Optional:</h5>
         <ul>
-          <li><code>markers="['San Francisco', 'San Jose']"</code></li>
-          <li><code>maptype="roadmap" // roadmap, satellite, terrain, hybrid</code></li>
-          <li><code>mapevents="{redirect: true, loadmap: false}"</code></li>
+          <li><code>markers: ['San Francisco', 'San Jose']</code></li>
+          <li><code>maptype: 'roadmap' // roadmap, satellite, terrain, hybrid</code></li>
+          <li><code>mapevents: {redirect: true, loadmap: false}</code></li>
+          <li><code>listen: true // watch for attributes change</code></li>
         </ul>
-        
+        <pre>};</pre>
+
         <h3>Demo</h3>
         
         <h4>mapevents: {{{redirect: false, loadmap: true} | json}}</h4>
         <p><small><em>
           Loads dynamic google map.
         </em></small></p>
-        <input type="text" ng-model="center">
-        <button ng-click="map1.center = center">Change</button>
+        <input type="text" ng-model="center" placeholder="New Center">
+        <button ng-click="map1.center = center">Change Center</button>
         <button ng-click="map1.zoom = 15">Zoom 15</button>
-        <button ng-click="map1.maptype = 'terrain'">hybrid</button>
-        <button ng-click="map1.markers = ['Los Angeles', 'Las Vegas']">markers</button>
-        <p>
-          {{map1 || json}}
-        </p>
+        <button ng-click="map1.markers = ['Los Angeles', 'Las Vegas']">Change Markers to LA and Vegas</button>
         <googlemaps class="google-maps" options="map1"></googlemaps>
         
         <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>
@@ -116,7 +117,7 @@
         <p><a href="http://twitter.com/janantala">Jan Antala</a></p>
     </section>
     
-    <!-- // <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script> -->
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
     <script src="components/angular/angular.js"></script>
     <script src="components/angular-adaptive/adaptive-googlemaps.js"></script>
     <script src="js/app.js"></script>

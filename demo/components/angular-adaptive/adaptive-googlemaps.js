@@ -6,14 +6,14 @@
 
 (function () {
   'use strict';
-  var google = window.google;
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$parse', '$log', function ($scope, $element, $parse, $log) {
+  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$parse', '$log', '$window', function ($scope, $element, $parse, $log, $window) {
 
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var that = this;
+    var google = $window.google;
 
     /**
      * Private methods
@@ -269,8 +269,6 @@
 
         var ael = element;
         scope.MAP_EVENTS = angular.extend({}, scope.options.mapevents);
-
-        console.log(scope.options);
 
         if (scope.options.sensor === undefined) {
           throw new Error('The `sensor` attribute is required.');

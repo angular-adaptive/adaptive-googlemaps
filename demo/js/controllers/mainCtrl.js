@@ -34,7 +34,7 @@ googlemaps.controller('mainCtrl', function mainCtrl($scope, $rootScope) {
     zoom: 12,
     center: 'New York',
     maptype: 'hybrid',
-    listen: true
+    listen: false
   };
 });
 
