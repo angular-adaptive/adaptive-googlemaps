@@ -9,7 +9,7 @@
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
-  adaptive.controller('GoogleMapsCtrl', function ($scope, $element, $attrs, $parse, $log) {
+  adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$parse', '$log', function ($scope, $element, $parse, $log) {
 
     var STATIC_URL = '//maps.googleapis.com/maps/api/staticmap?';
     var mapLoaded = false;
@@ -60,8 +60,9 @@
      * Public methods
      */
 
-    this.buildStaticMap = function buildStaticMap(MAP_EVENTS, attrs, markers) {
+    this.buildStaticMap = function buildStaticMap(MAP_EVENTS, staticAttributes) {
       var markerStrings;
+      var markers = staticAttributes.markers;
 
       if (markers) {
         if (!angular.isArray(markers)) {
@@ -70,6 +71,7 @@
         markerStrings = markers;
       }
 
+      var attrs = staticAttributes;
       var params = Object.keys(attrs).map(function (attr) {
         if (attr === 'markers' && markerStrings) {
           return Object.keys(markerStrings).map(function (key) {
@@ -77,27 +79,25 @@
           }).join('&');
         }
 
-        if (attr[0] !== '$' && attr !== 'alt') {
-          return encodeURIComponent(attr) + '=' + encodeURIComponent(attrs[attr]);
-        }
+        return encodeURIComponent(attr) + '=' + encodeURIComponent(attrs[attr]);
       });
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
         var b = MAP_EVENTS.redirect && getLocation(
-          $attrs.center,
+          $scope.center,
           function(location){
-            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
             $scope.$apply();
           },
           function(error){
-            $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $attrs.zoom + '&t=' + getMapType($attrs.maptype, true);
+            $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
             $scope.$apply();
           }
         );
       })(MAP_EVENTS);
 
-      return STATIC_URL + params.reduce(function (a, b) {
+      $scope.imgsrc = STATIC_URL + params.reduce(function (a, b) {
         if (!a) {
           return b;
         }
@@ -108,23 +108,25 @@
 
         return a;
       }, '');
+
+      this.updateStyle();
     };
 
-    this.buildDynamicMap = function(MAP_EVENTS, $element, center, zoom, maptype, markers) {
+    this.buildDynamicMap = function(MAP_EVENTS, $element, dynamicAttributes) {
       var mapOptions = {
         center: new google.maps.LatLng(0, 0),
-        zoom: (Number(zoom) || 6),
-        mapTypeId: getMapType(maptype, false)
+        zoom: (Number(dynamicAttributes.zoom) || 6),
+        mapTypeId: getMapType(dynamicAttributes.maptype, false)
       };
 
       var map = new google.maps.Map($element[0], mapOptions);
 
       getLocation(
-        center,
+        dynamicAttributes.center,
         function(location){
           map.setCenter(location);
-          for (var i = 0; markers && i < markers.length; i++) {
-            addMarker(markers[i], map);
+          for (var i = 0; dynamicAttributes.markers && i < dynamicAttributes.markers.length; i++) {
+            addMarker(dynamicAttributes.markers[i], map);
           }
         },
         function(error){
@@ -133,66 +135,76 @@
       );
     };
 
-    this.setStyle = function(style){
-      $log.log(style);
-      $scope.style = style;
+    this.updateStyle = function(){
+      $scope.style = {
+        'display': 'block',
+        'cursor': 'pointer',
+        'background-image': 'url(\'' + ($scope.imgsrc || STATIC_URL + 'sensor=' + ($scope.options.sensor || false) + '&size=' + ($scope.options.size)) + '\')',
+        'background-repeat': 'no-repeat',
+        '-webkit-background-size': 'cover',
+        '-moz-background-size': 'cover',
+        '-o-background-size': 'cover',
+        '-ms-background-size': 'cover',
+        'background-size': 'cover',
+        'background-position': 'center center'
+      };
     };
 
-  });
+    this.updateStyle();
 
-  adaptive.directive('googlemaps', function ($parse) {
+  }]);
+
+  adaptive.directive('googlemaps', [ '$parse', function ($parse) {
     return {
       template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
       replace: true,
       restrict: 'E',
       controller: 'GoogleMapsCtrl',
-      scope: true,
+      scope: {
+        options: '='
+      },
 
       link: function postLink(scope, element, attrs, ctrl) {
 
         var ael = element;
-        var markers = $parse(attrs.markers)(scope);
-        var MAP_EVENTS = angular.extend({}, $parse(attrs.mapevents)(scope));
+        var MAP_EVENTS = angular.extend({}, scope.options.mapevents);
 
-        if (!attrs.sensor) {
+        console.log(scope.options);
+
+        if (scope.options.sensor === undefined) {
           throw new Error('The `sensor` attribute is required.');
         }
 
-        if (!attrs.size) {
+        if (!scope.options.size) {
           throw new Error('The `size` attribute is required.');
         }
 
-        if (!attrs.center) {
+        if (!scope.options.center) {
           throw new Error('The `center` attribute is required.');
         }
 
-        var sizeBits = attrs.size.split('x');
+        var sizeBits = scope.options.size.split('x');
         if (sizeBits.length !== 2) {
           throw new Error('Size must be specified as `wxh`.');
         }
 
         var staticAttributes = {
-          'sensor': attrs.sensor,
-          'size': attrs.size,
-          'maptype': attrs.maptype,
-          'center': attrs.center,
-          'zoom': attrs.zoom,
-          'markers': attrs.markers
+          'sensor': scope.options.sensor,
+          'size': scope.options.size,
+          'maptype': scope.options.maptype,
+          'center': scope.options.center,
+          'zoom': scope.options.zoom,
+          'markers': scope.options.markers
         };
-        var imgsrc = ctrl.buildStaticMap(MAP_EVENTS, staticAttributes, markers);
 
-        ctrl.setStyle({
-          'display': 'block',
-          'cursor': 'pointer',
-          'background-image': 'url(\'' + imgsrc + '\')',
-          'background-repeat': 'no-repeat',
-          '-webkit-background-size': 'cover',
-          '-moz-background-size': 'cover',
-          '-o-background-size': 'cover',
-          '-ms-background-size': 'cover',
-          'background-size': 'cover',
-          'background-position': 'center center'
-        });
+        var dynamicAttributes = {
+          'maptype': scope.options.maptype,
+          'center': scope.options.center,
+          'zoom': scope.options.zoom,
+          'markers': scope.options.markers
+        };
+        
+        ctrl.buildStaticMap(MAP_EVENTS, staticAttributes);
 
         var mapLoaded = false;
         element.bind('click', function(event){
@@ -200,7 +212,7 @@
             event.preventDefault();
             mapLoaded = true;
             ael.removeAttr('href');
-            ctrl.buildDynamicMap(MAP_EVENTS, ael, attrs.center, attrs.zoom, attrs.maptype, markers);
+            ctrl.buildDynamicMap(MAP_EVENTS, ael, dynamicAttributes);
           }
           else if (!MAP_EVENTS.redirect && !mapLoaded) {
             event.preventDefault();
@@ -211,5 +223,5 @@
         });
       }
     };
-  });
+  }]);
 }(google));
