@@ -13,7 +13,7 @@ googlemaps.controller('mainCtrl', function mainCtrl($scope, $rootScope) {
     center: 'San Francisco International Airport',
     markers: ['San Francisco', 'San Jose'],
     maptype: 'terrain',
-    mapevents: {redirect: false, loadmap: true}
+    mapevents: {redirect: true, loadmap: true}
   };
 });
 

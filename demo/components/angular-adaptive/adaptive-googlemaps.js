@@ -84,17 +84,20 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        var b = MAP_EVENTS.redirect && getLocation(
-          $scope.center,
-          function(location){
-            $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
-            $scope.$apply();
-          },
-          function(error){
-            $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
-            $scope.$apply();
-          }
-        );
+        if (MAP_EVENTS.redirect && !$scope.location) {
+          getLocation(
+            $scope.options.center,
+            function(location){
+              $scope.location = location;
+              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
+              $scope.$apply();
+            },
+            function(error){
+              $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $scope.zoom + '&t=' + getMapType($scope.maptype, true);
+              $scope.$apply();
+            }
+          );
+        }
       })(MAP_EVENTS);
 
       $scope.imgsrc = STATIC_URL + params.reduce(function (a, b) {
@@ -109,12 +112,12 @@
         return a;
       }, '');
 
-      this.updateStyle();
+      $scope.updateStyle();
     };
 
     this.buildDynamicMap = function(MAP_EVENTS, $element, dynamicAttributes) {
       var mapOptions = {
-        center: new google.maps.LatLng(0, 0),
+        center: ($scope.location || new google.maps.LatLng(0, 0)),
         zoom: (Number(dynamicAttributes.zoom) || 6),
         mapTypeId: getMapType(dynamicAttributes.maptype, false)
       };
@@ -135,7 +138,7 @@
       );
     };
 
-    this.updateStyle = function(){
+    $scope.updateStyle = function(){
       $scope.style = {
         'display': 'block',
         'cursor': 'pointer',
@@ -150,7 +153,7 @@
       };
     };
 
-    this.updateStyle();
+    $scope.updateStyle();
 
   }]);
 
