@@ -4,8 +4,9 @@
  * Copyright (c) 2013 Jan Antala
  */
 
-(function (google) {
+(function () {
   'use strict';
+  var google = window.google;
 
   var adaptive = angular.module('adaptive.googlemaps', []);
 
@@ -101,7 +102,7 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        if (MAP_EVENTS.redirect && !$scope.location) {
+        if (google && MAP_EVENTS.redirect && !$scope.location) {
           getLocation(
             $scope.options.center,
             function(location){
@@ -134,6 +135,10 @@
     };
 
     this.buildDynamicMap = function() {
+      if (!google) {
+        return $log.error('The `googlemaps` script is required.');
+      }
+
       var dynamicAttributes = {
         'maptype': $scope.options.maptype,
         'center': $scope.options.center,
@@ -148,6 +153,7 @@
       };
 
       $scope.map = new google.maps.Map($element[0], mapOptions);
+      $scope.mapLoaded = true;
       $scope.style['background-image'] = 'none';
       $scope.$apply();
 
@@ -305,7 +311,6 @@
         element.bind('click', function(event){
           if (scope.MAP_EVENTS.loadmap && !scope.mapLoaded) {
             event.preventDefault();
-            scope.mapLoaded = true;
             ael.removeAttr('href');
             ctrl.buildDynamicMap();
           }
@@ -319,4 +324,4 @@
       }
     };
   }]);
-}(google));
+}());
