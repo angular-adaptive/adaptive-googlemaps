@@ -83,9 +83,9 @@
         </em></small></p>
         <input type="text" ng-model="center">
         <button ng-click="map1.center = center">Change</button>
-        <button ng-click="map1.zoom = 16">Zoom 16</button>
+        <button ng-click="map1.zoom = 15">Zoom 15</button>
         <button ng-click="map1.maptype = 'hybrid'">hybrid</button>
-        <button ng-click="map1.markers = []">markers</button>
+        <button ng-click="map1.markers = ['Los Angeles', 'Las Vegas']">markers</button>
         <googlemaps class="google-maps" options="map1"></googlemaps>
         
         <!-- <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>

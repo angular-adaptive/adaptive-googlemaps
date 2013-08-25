@@ -37,8 +37,7 @@
           position: location,
           title: address,
           map: $scope.map,
-          draggable: false,
-          animation: google.maps.Animation.DROP
+          draggable: false
         });
 
         $scope.markersArray.push(marker);
@@ -162,6 +161,19 @@
           $log.error(error);
         }
       );
+
+      google.maps.event.addListener($scope.map, 'zoom_changed', function() {
+        $scope.options.zoom = $scope.map.getZoom();
+      });
+
+      google.maps.event.addListener($scope.map, 'maptypeid_changed', function() {
+        $scope.options.maptype = $scope.map.getMapTypeId();
+      });
+
+      google.maps.event.addListener($scope.map, 'center_changed', function() {
+        var center = $scope.map.getCenter();
+        $scope.options.center = center.mb + ',' + center.nb;
+      });
     };
 
     $scope.updateStyle = function(){
@@ -190,7 +202,7 @@
           getLocation(
             $scope.options.center,
             function(location){
-              $scope.map.setCenter(location);
+              $scope.map.panTo(location);
             },
             function(error){
               $log.error(error);
