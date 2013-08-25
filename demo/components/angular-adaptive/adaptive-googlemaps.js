@@ -102,20 +102,8 @@
 
       (function(MAP_EVENTS){
         var query = markers && markers.length ? markers[0] : '';
-        if (google && MAP_EVENTS.redirect && !$scope.location) {
-          getLocation(
-            $scope.options.center,
-            function(location){
-              $scope.location = location;
-              $scope.MAP_HREF = 'http://maps.apple.com/?ll=' + location.mb + ',' + location.nb + '&q=' + query + '&z=' + $scope.options.zoom + '&t=' + getMapType($scope.options.maptype, true);
-              $scope.$apply();
-            },
-            function(error){
-              $log.error(error);
-              $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + query + '&z=' + $scope.options.zoom + '&t=' + getMapType($scope.options.maptype, true);
-              $scope.$apply();
-            }
-          );
+        if (MAP_EVENTS.redirect && !$scope.location) {
+          $scope.MAP_HREF = 'http://maps.apple.com/?' + '&q=' + $scope.options.center + '&z=' + $scope.options.zoom + '&t=' + getMapType($scope.options.maptype, true);
         }
       })($scope.MAP_EVENTS);
 
