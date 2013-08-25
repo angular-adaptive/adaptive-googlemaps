@@ -148,6 +148,8 @@
       };
 
       $scope.map = new google.maps.Map($element[0], mapOptions);
+      $scope.style['background-image'] = 'none';
+      $scope.$apply();
 
       getLocation(
         dynamicAttributes.center,
