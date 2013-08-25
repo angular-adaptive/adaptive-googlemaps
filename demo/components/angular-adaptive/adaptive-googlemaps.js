@@ -30,16 +30,26 @@
       });
     };
 
-    var addMarker = function(address, map) {
+    $scope.markersArray = [];
+    var addMarker = function(address) {
       getLocation(address, function(location){
         var marker = new google.maps.Marker({
           position: location,
           title: address,
-          map: map,
+          map: $scope.map,
           draggable: false,
           animation: google.maps.Animation.DROP
         });
+
+        $scope.markersArray.push(marker);
       });
+    };
+
+    var removeMarkers = function() {
+      for (var i=0; i<$scope.markersArray.length;i++) {
+        $scope.markersArray[i].setMap(null);
+      }
+      $scope.markersArray = [];
     };
 
     var getMapType = function(maptype, href) {
@@ -138,14 +148,14 @@
         mapTypeId: getMapType(dynamicAttributes.maptype, false)
       };
 
-      var map = new google.maps.Map($element[0], mapOptions);
+      $scope.map = new google.maps.Map($element[0], mapOptions);
 
       getLocation(
         dynamicAttributes.center,
         function(location){
-          map.setCenter(location);
+          $scope.map.setCenter(location);
           for (var i = 0; dynamicAttributes.markers && i < dynamicAttributes.markers.length; i++) {
-            addMarker(dynamicAttributes.markers[i], map);
+            addMarker(dynamicAttributes.markers[i]);
           }
         },
         function(error){
@@ -171,12 +181,34 @@
 
     $scope.updateStyle();
 
-    $scope.buildMap = function() {
+    $scope.buildMap = function(changed) {
       if (!$scope.mapLoaded) {
         that.buildStaticMap();
       }
       else {
-        that.buildDynamicMap();
+        if (changed === 'center') {
+          getLocation(
+            $scope.options.center,
+            function(location){
+              $scope.map.setCenter(location);
+            },
+            function(error){
+              $log.error(error);
+            }
+          );
+        }
+        else if (changed === 'zoom') {
+          $scope.map.setZoom($scope.options.zoom);
+        }
+        else if (changed === 'maptype') {
+          $scope.map.setMapTypeId(getMapType($scope.maptype));
+        }
+        else if (changed === 'markers') {
+          removeMarkers();
+          for (var i = 0; $scope.options.markers && i < $scope.options.markers.length; i++) {
+            addMarker($scope.options.markers[i]);
+          }
+        }
       }
     };
 
@@ -249,10 +281,13 @@
           throw new Error('Size must be specified as `wxh`.');
         }
         
-        ctrl.startWatching();
         ctrl.buildStaticMap();
-
         scope.mapLoaded = false;
+
+        if (scope.options.listen) {
+          ctrl.startWatching();
+        }
+
         element.bind('click', function(event){
           if (scope.MAP_EVENTS.loadmap && !scope.mapLoaded) {
             event.preventDefault();
