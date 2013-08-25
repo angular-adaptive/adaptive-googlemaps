@@ -84,23 +84,26 @@
         <input type="text" ng-model="center">
         <button ng-click="map1.center = center">Change</button>
         <button ng-click="map1.zoom = 15">Zoom 15</button>
-        <button ng-click="map1.maptype = 'hybrid'">hybrid</button>
+        <button ng-click="map1.maptype = 'terrain'">hybrid</button>
         <button ng-click="map1.markers = ['Los Angeles', 'Las Vegas']">markers</button>
+        <p>
+          {{map1 || json}}
+        </p>
         <googlemaps class="google-maps" options="map1"></googlemaps>
         
-        <!-- <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>
+        <h4>mapevents: {{{redirect: true, loadmap: false} | json}}</h4>
         <p><small><em>
           Opens google map in a new tab / a native mobile application.
         </em></small></p>
-        <googlemaps class="google-maps" sensor="false" size="'500x300'" zoom="6" center="'Pennsylvania'" markers="['New York', 'Philadalphia', 'Washington DC']" maptype="'roadmap'" mapevents="{redirect: true, loadmap: false}"></googlemaps>
+        <googlemaps class="google-maps" options="map2"></googlemaps>
         <p><small><em>Note: only the first marker is shown in Google Maps redirect.</em></small></p>
         
         <h4>mapevents: no mapevents</h4>
         <p><small><em>
           Nothing happens.
         </em></small></p>
-        <googlemaps class="google-maps" sensor="false" size="'500x300'" zoom="12" center="'New York'" maptype="'hybrid'"></googlemaps>
-         -->
+        <googlemaps class="google-maps" options="map3"></googlemaps>
+        
         <h3>ToDo:</h3>
         <ul>
           <li>
