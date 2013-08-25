@@ -10,11 +10,21 @@ describe('adaptive.googlemaps', function() {
   var elm, scope;
 
   beforeEach(inject(function($rootScope, $compile) {
-    elm = angular.element(
-      '<googlemaps class="google-maps" sensor="false" size="500x300" zoom="9" center="San Francisco International Airport" markers="[\'San Francisco\', \'San Jose\']" maptype="terrain" mapevents="{redirect: false, loadmap: true}"></googlemaps>'
-    );
+    scope = $rootScope.$new();
+    scope.map1 = {
+      sensor: false,
+      size: '500x300',
+      zoom: 9,
+      center: 'San Francisco International Airport',
+      markers: ['San Francisco', 'San Jose'],
+      maptype: 'terrain',
+      mapevents: {redirect: false, loadmap: true},
+      listen: true
+    };
 
-    scope = $rootScope;
+    elm = angular.element(
+      '<googlemaps class="google-maps" options="map1"></googlemaps>'
+    );
 
     $compile(elm)(scope);
     scope.$digest();
