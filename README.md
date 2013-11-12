@@ -1,4 +1,4 @@
-# adaptive-googlemaps v0.2.0 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
+# adaptive-googlemaps v0.3.0 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
 
 This module allows you to adapt googlemaps component for different occasions.
 - static google map
@@ -27,11 +27,11 @@ To your `bower.json` file. Then run
 
     bower install
 
-This will copy the angular-isbn files into your `bower_components` folder, along with its dependencies. Load the script files in your application:
+This will copy the angular-adaptive-googlemaps files into your `bower_components` folder, along with its dependencies. Load the script files in your application:
 
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="components/angular/angular.js"></script>
-    <script type="text/javascript" src="components/angular-adaptive/adaptive-googlemaps/src/adaptive-googlemaps.js"></script>
+    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="bower_components/angular-adaptive-googlemaps/angular-adaptive-googlemaps.min.js"></script>
 
 Add the **adaptive.googlemaps** module as a dependency to your application module:
 

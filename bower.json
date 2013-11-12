@@ -1,11 +1,21 @@
 {
   "name": "angular-adaptive-googlemaps",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "This module allows you to adapat googlemaps component for different occasions.",
   "author": "https://github.com/angular-adaptive/adaptive-googlemaps/graphs/contributors",
   "license": "MIT",
+  "keywords": [
+    "angular",
+    "adaptive",
+    "maps",
+    "googlemaps"
+  ],
   "homepage": "http://angular-adaptive.github.io",
-  "main": "./src/adaptive-googlemaps.js",
+  "main": "./src/angular-adaptive-googlemaps.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/angular-adaptive/adaptive-googlemaps.git"
+  },
   "ignore": [
     "**/.*",
     "node_modules",
