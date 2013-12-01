@@ -1,6 +1,15 @@
 (function () {
   'use strict';
 
+  /**
+   * @ngdoc overview
+   * @name adaptive.googlemaps
+   *
+   * @description
+   * This module allows you to adapt googlemaps component for different occasions like
+   * static google map, open map in a new tab / a native mobile application or
+   * load a dynamic google map.
+   */
   var adaptive = angular.module('adaptive.googlemaps', []);
 
   adaptive.controller('GoogleMapsCtrl', [ '$scope', '$element', '$log', '$window', function ($scope, $element, $log, $window) {
@@ -249,6 +258,24 @@
 
   }]);
 
+  /**
+   * @ngdoc object
+   * @name adaptive.googlemaps
+   * @restrict E
+   *
+   * @description
+   * Use this directive to generate google maps. The `googlemaps` directive lets
+   * you configure the following options:
+   *
+   * **sensor** - Should be either true or false.
+   * **size** - The size of the generated map in pixels.
+   * **zoom** - Zoom level.
+   * **center** - The center place of the generated map.
+   * **markers** - An array of markers.
+   * **maptype** - The map type.
+   * **mapevents** - An object that declares map events.
+   * **listen** - 
+   */
   adaptive.directive('googlemaps', [ function () {
     return {
       template: '<a ng-style="style" ng-href="{{MAP_HREF}}" target="_blank"></a>',
