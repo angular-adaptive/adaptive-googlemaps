@@ -13,15 +13,17 @@ Check out http://angular-adaptive.github.io/adaptive-googlemaps/demo/
 # Requirements
 
 - AngularJS v 1.0+
-- Googlemaps script (only for dynamic google map)
+- Googlemaps JS API v3 (only for dynamic google map)
 
 # Usage
 
 We use [bower](http://twitter.github.com/bower/) for dependency management. Add
 
-    dependencies: {
-        "angular-adaptive-googlemaps": "latest"
-    }
+```json
+dependencies: {
+    "angular-adaptive-googlemaps": "latest"
+}
+```
 
 To your `bower.json` file. Then run
 
@@ -29,30 +31,38 @@ To your `bower.json` file. Then run
 
 This will copy the angular-adaptive-googlemaps files into your `bower_components` folder, along with its dependencies. Load the script files in your application:
 
-    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-    <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-    <script type="text/javascript" src="bower_components/angular-adaptive-googlemaps/angular-adaptive-googlemaps.min.js"></script>
+```html
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript" src="bower_components/angular/angular.js"></script>
+<script type="text/javascript" src="bower_components/angular-adaptive-googlemaps/angular-adaptive-googlemaps.min.js"></script>
+```
 
 Add the **adaptive.googlemaps** module as a dependency to your application module:
 
-    var myAppModule = angular.module('MyApp', ['adaptive.googlemaps']);
+```js
+var myAppModule = angular.module('MyApp', ['adaptive.googlemaps']);
+```
 
 Add **googlemaps** element into your template
 
-    <googlemaps class="google-maps" options="map1"></googlemaps>
+```js
+<googlemaps class="google-maps" options="map1"></googlemaps>
+```
 
 ### Directive attributes
 
-    $scope.map1 = {
-        sensor: false,
-        size: '500x300',
-        zoom: 9,
-        center: 'San Francisco International Airport',
-        markers: ['San Francisco', 'San Jose'],
-        maptype: 'terrain',
-        mapevents: {redirect: false, loadmap: true},
-        listen: true
-    };
+```js
+$scope.map1 = {
+    sensor: false,
+    size: '500x300',
+    zoom: 9,
+    center: 'San Francisco International Airport',
+    markers: ['San Francisco', 'San Jose'],
+    maptype: 'terrain',
+    mapevents: {redirect: false, loadmap: true},
+    listen: true
+};
+```
 
 #### Required:
 
