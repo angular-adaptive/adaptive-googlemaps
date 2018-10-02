@@ -1,3 +1,7 @@
+# This repository is deprecated!
+
+---
+
 # adaptive-googlemaps v0.3.0 [![Build Status](https://travis-ci.org/angular-adaptive/adaptive-googlemaps.png?branch=master)](https://travis-ci.org/angular-adaptive/adaptive-googlemaps)
 
 This module allows you to adapt googlemaps component for different occasions.
